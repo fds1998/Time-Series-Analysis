@@ -1,0 +1,186 @@
+---
+title: "STA 137 - Final Project"
+author: 'Falak Shah (SID: 914663151)'
+date: "12/5/2019"
+output: bookdown::html_document2
+---
+
+```{r,echo=FALSE}
+my_data = read.table("C:/Users/Falak/Desktop/137/GD.dat.txt",header = FALSE)
+library(astsa)
+colnames(my_data) = c("Gun Sales","Deaths")
+attach(my_data)
+```
+
+INTRODUCTION:
+The dataset consists of data on monthly handgun sales and firearm related deaths in California from 1980-1998.This report
+aims to analyze the presence of trends and/or seasonal components present in each of the two variables and accordingly fit
+a suitable model for each variable. Furthermore,this report also aims to construct a model relating the firearm guns and
+handgun sales to determine the presence of any relationship between the two variables.
+It is a time series data because both variables are measured monthly across various time points,i.e. from 1980-1998.It is important to analyze this data because the data points taken over time might have an internal structure such as autocorrelation,trend or seasonal variation which need to be accounted for when selecting the correct model,which could be used to understand the past as well as predict the future.
+
+# ANALYSIS AND RESULTS [GUN SALES DATA]:
+Observing figure 1.1, we can see that the gun sales varies across the different months of measurement. There are
+large trends in the data. Majorly, there are mixed trends of increase and decrease in Sales, which is followed by a big decreasing trend towards the end of the measurement period. To analyze further details about the data, which cannot be viewed from Figure 1, we move onto observing the acf and pacf plots of the original, untransformed Gun Sales series. 
+
+Referring to figure 1.2, we can observe from the acf plot that the ACF ordinates are large and decay slowly.
+Furthermore,the PACF has one large peak at lag 1. Therefore, the time series is not stationary. As it is 
+non stationary and the acf depicts slow linear decay, differencing is required and a remedy might be to look at 
+the log transformed series.
+
+Looking at figure 1.3, we can observe that log differncing has removed the trend in the series. There still seems to
+exist an apparent trend component, which is confirmed from the acf and pacf plots of the first differnced log series in
+figure 1.4. We can observe that acf decays slowly at lags multiple of 12 and the pacf has one large peak at the first
+multiple of 12, lag 12. Therefore, this suggests lag 12 differncing in order to remove the seasonality.
+
+Figure 1.5 depicts the lag 12 differnced time series, the mean looks centered around zero and the series looks smoother 
+compared to the one before. Furthermore,the series looks stationary after the aforementioned transformations. Close
+analysis of the acf and pacf plots in Figure 1.6 confirms these observations and helps us determine the candidate models. On first observation, the ACF seems to cut off after lag 2 and PACF seems to tail off, whereas the acf at lags multiple of 12 also seems to cut off after the second multiple of 12, lag 24, whereas PACF at lags multiple of 12 seems to tail off. Thus,first model suggested is SARIMA(0,1,2)x(0,1,2)[12].
+
+Another way of interpreting the acf and pacf plots is that the ACF cuts off after lag 2,PACF  tails off, whereas the
+ACF at lags multiple of 12 seems to tail off and the PACF at lags multiple of 12 seems to cut off after the third lag.
+Thus, second candidate model is SARIMA(0,1,2)x(3,1,0)[12]
+
+
+```{r,echo=FALSE,fig.cap="Plots for Gun Sales data"}
+# GUN SALES DATA
+# INITIAL CHECKING
+tsplot(`Gun Sales`,ylab = "Gun Sales",main = "Gun Sales series")
+acf2(`Gun Sales`)
+# FIRST DIFFERNCED SERIES
+tsplot(diff(log(`Gun Sales`)),ylab = "Gun Sales",main = "Differenced Gun Sales series" )
+acf2(diff(log(`Gun Sales`)),max.lag = 60)
+# LAG 12 DIFFERENCED SERIES
+tsplot(diff(diff(log(`Gun Sales`),12)),ylab = "Gun Sales",main = " Seasonal Lag 12 differenced Gun Sales Series")
+acf2(diff(diff(log(`Gun Sales`),12)),max.lag = 48)
+```
+
+
+```{r,echo=TRUE}
+# MODEL 1
+t1 = sarima(log(`Gun Sales`),p=0,d=1,q=2,P=2,D=1,Q=0,S=12)
+# MODEL 2
+t2 = sarima(log(`Gun Sales`),p=0,d=1,q=2,P=3,D=1,Q=0,S=12)
+# MODEL SELECTION
+t1$ttable
+t2$ttable
+# COMPARING INFORMATION CRITERIONS
+c(t1$AIC,t1$AICc,t1$BIC)
+c(t2$AIC,t2$AICc,t2$BIC)
+```
+According to the diagnostic plots and the ttable, all estimated are significant for both the models. There is no
+apparent trend or pattern in the plot of standardized residuals for either of the model.ACF is significant for a couple
+of lags for the FIRST model, Q statistic is also significant at many lags. For the second model, normality assumption
+holds apart from a couple of outliers, Q statistic is not significant at most of the lags and ACF shows no apparent
+dependant structure. Furthermore, all three information criterions, AIC,AICc and BIC suggest the second model. Thus,
+the second model fits best for Gun Sales Data.
+
+# ANALYSIS AND RESULTS [DEATHS DATA]
+In the initial time series plot in figure 2.1 shows an obvious trend, although mixed. Decrease in death followed by increase and followed by sizeable decrease again. The series does not look stationary. The acf and pacf plots 
+in figure 2.2 verify these observations. There is a slow linear decay depicted by acf and the ordinates are large. 
+There is one large peak in the pacf at lag 1. Therefore, due to these features,log differencing is a usual transformation. 
+
+The log differencing has removed the trend which can be observed in figure 2.3. The transformed series looks a lot closer
+to a stationary series, but there still exists a seasonal component in the transformed series,which is confirmed by the 
+acf and pacf plots in figure 2.4. The acf decays slowly at lags multiple of 12 and the pacf also seems to depict the 
+same linear decay at lags multiple of 12 behaviour. Thus, this suggests lag 12 differencing in order to remove this
+seasonal behaviour.
+
+The transformed lag 12 differnced series is stationary with constant and centered around zero(figure 2.5). 
+The slow linear decay at lags multiple of 12 behavior has also been removed which can be verified from the
+acf and pacf plots in figure 2.6.
+The ACF seems to cut off after lag 1 and the PACF seems to tail off, whereas the acf at lags multiple of 12 seems to
+cut off after the first multiple of 12(lag 12), and the PACF at lags multiple of 12 seems to be tailing off. Thus, 
+the model suggested is SARIMA(0,1,1)X(0,1,1)[12]. Furthermore, I also fitted SARIMA(1,1,1)X(0,1,1)[12] to check which fits best.
+
+```{r,echo=FALSE,fig.cap="Plots for Deaths Data"}
+# DEATHS DATA
+# INITIAL CHECKING
+tsplot(my_data$Deaths,ylab = "Deaths",main = "Deaths series")
+acf2(my_data$Deaths)
+# FIRST DIFFERENCED SERIES
+tsplot(diff(log(my_data$Deaths)),ylab = "Deaths",main = "Differenced Deaths series" )
+acf2(diff(log(my_data$Deaths)),max.lag = 60)
+# LAG 12 DIFFERENCED SERIES
+tsplot(diff(diff(log(my_data$Deaths),12)),ylab = "Deaths",main = " Seasonal Lag 12 differenced Deaths Series")
+acf2(diff(diff(log(my_data$Deaths),12)),max.lag = 60)
+```
+
+```{r,echo=TRUE}
+# MODEL 1
+w1 = sarima(log(my_data$Deaths),p=0,d=1,q=1,P=0,D=1,Q=1,S=12)
+# MODEL 2
+w2 = sarima(log(my_data$Deaths),p=1,d=1,q=1,P=0,D=1,Q=1,S=12)
+w1$ttable
+w2$ttable
+# COMPARING INFORMATION CRITERIONS
+c(w1$AIC,w1$AICc,w1$BIC)
+c(w2$AIC,w2$AICc,w2$BIC)
+```
+From the diagnostic plots of both the candidate models, we can draw the following conclusions:
+There is no apparent trend or pattern in the plot of the standardized residuals;There are no outliers with residuals exceeding three standard deviation in magniture;ACF shows no apparent significant dependence structure;Q statistics is not significant at most of the lags;Normality assumption seems to be appropriate with the exception of outliers.
+But estimated parameter for ar1 in the second model is not significant as the p value is not close to 0, thus we drop
+it from the model and choose model 1, which is (0,1,1)X(0,1,1)[12]. All the three information criterions, AIC, AICc,
+BIC also suggest the first model. 
+
+# Regression with Autocorrelated Errors
+As the ccf,in figure 3.1, does not show any pattern of leading and lagging between the two time series, we examine regression with autocorrelated errors to find out the presence of linear relationship between firearm deaths and 
+handgun sales. The time series plot of the residuals,figure 3.2, shows a slight increasing trend followed by a decreasing trend towards the end. The existence of trend and seasonality can be seen from the acf and pacf plots in figure 3.3. The
+plot is also not stationary. A first difference is taken to remove trend, but there still exists slow linear decay in
+acf at lags multiple of 12 and large peak of pacf at lag 1, which can be observed from figure 3.4. Thus,lag 12 difference
+is taken to remove this behavior and make the series stationary. We can fit a model for the residuals based on the 
+acf and pacf plots in figure 3.5. The acf cuts off after lag 1, and the pacf tails off. At lags multiple of 12, the acf
+seems to be tailing off and the PACF sees to cut off after second multiple of 12, lag =24. Thus, the candidate model 
+is SARIMA(0,1,1)X(2,1,0)[12]
+
+```{r,echo=FALSE,fig.cap="ccf and Reg. plots"}
+ccf2(my_data$`Gun Sales`,my_data$Deaths)
+fit = lm(my_data$Deaths~my_data$`Gun Sales`)
+tsplot(fit$residuals,main = "residual series")
+res = fit$residuals
+acf2(res)
+tsplot(diff(res),main = "differenced residual series")
+acf2(diff(res),max.lag = 48)
+acf2(diff(diff(res,12)),max.lag = 48)
+```
+
+```{r,echo=TRUE}
+# MODEL FITTING FOR RESIDUALS
+sarima(res,p=0,d=1,q=1,P=2,D=1,Q=0,S=12)
+
+# CHECKING THE SAME MODEL FOR GUN SALES
+sarima((my_data$`Gun Sales`),p=0,d=1,q=1,P=2,D=1,Q=0,S=12)
+# CHECKING SAME MODEL FOR DEATHS
+w3 = sarima((my_data$Deaths),p=0,d=1,q=1,P=2,D=1,Q=0,S=12)
+
+# Running weighted least squares on the regression model for autocorrelated errors using the model specified
+# for residuals
+sarima((my_data$Deaths),p=0,d=1,q=1,P=2,D=1,Q=0,S=12,xreg = cbind(my_data$`Gun Sales`))
+
+# Comparing information criterions of  original fitted model for deaths along with this model
+c(w2$AIC,w2$AICc,w2$BIC)
+c(w3$AIC,w3$AICc,w3$BIC)
+```
+From the diagnostic output for the residuals, all the requirements are satisfied.There is no apparent trend or pattern in the plot of the standardized residualsThere are no outliers with residuals exceeding three standard deviation in magniture;ACF shows no apparent significant dependence structure;Q statistics are not significant significant at most lags;Normality assumption seems to be appropriate with the exception of outliers. Thus, SARIMA(0,1,1)X(2,1,0)[12] fits
+the reiduals well. The same model does not fit the gun sales data as Q statistic is significant at all lags. This
+model also does not fit well for the deaths data as Q statistic is insignificant at more lags for the originally 
+fitted model as compared to this one. The information criterions also suggest the same.
+
+On running the weighted least squares method on the regression model with autocorrelated errors using the residuals
+model, we find that all the estimated parameters are significant and the regression coefficient for x is positive
+and equal to 0.001, which signifies a positive linear relationship between handgun sales and deaths.
+That linear model is Y~ 0.001x + Wt, where Wt is white noise ~(0,sigma^2)
+
+# CONCLUSION:
+1. The best model for handgun sales is SARIMA(0,1,2)x(3,1,0)[12]
+
+2. The best model for deaths is SARIMA(0,1,1)x(0,1,1)[12]
+
+3. The best model for residuals is SARIMA(0,1,1)X(2,1,0)[12]
+
+4. Handgun Sales and Deaths are positively related. The linear model is  Y~ 0.001x + Wt, where Wt is white noise ~(0,sigma^2)
+
+
+### Appendix 
+```{r, ref.label=knitr::all_labels(),echo=TRUE,eval=FALSE,fig.show='hold'}
+```
