@@ -4,12 +4,7 @@ aims to analyze the presence of trends and/or seasonal components present in eac
 a suitable model for each variable. Furthermore,this report also aims to construct a model relating the firearm guns and
 handgun sales to determine the presence of any relationship between the two variables.
 
-<style>
-table, th, td {
-  border: 1px solid black;
-  border-collapse: collapse;
-}
-</style>
+
 <table style="width: 80%;>
   <col width="10%">
   <col width="10%">
