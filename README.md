@@ -27,7 +27,7 @@ handgun sales to determine the presence of any relationship between the two vari
             <td>     -    </td>
             <td>     -    </td>
             <td>     -    </td>
-            <td>3 graphs (Team Distribution, Players Point Distribution, Advanced Brak down of Points)</td>
+            <td>3 graphs (Team Distribution, Players Point Distribution, Advanced Breakdown of Points)</td>
         </tr>
         <tr>
             <td>Case 2</td>
@@ -35,7 +35,7 @@ handgun sales to determine the presence of any relationship between the two vari
             <td>Select Any</td>
             <td>     -</td>
             <td>     -</td>
-            <td>2 graphs (Player Break down by Proposition & price, Players Statistics)</td>
+            <td>2 graphs (Player Breakdown by Proposition & price, Players Statistics)</td>
         </tr>
         <tr>
             <td>Case 3</td>
@@ -43,7 +43,7 @@ handgun sales to determine the presence of any relationship between the two vari
             <td>     -</td>
             <td>Select Any</td>
             <td>     -</td>
-            <td>3 graphs (Team Distribution, Players' Point Distribution, Advanced Brak down of Points)- filtered according to the cost selected</td>
+            <td>3 graphs (Team Distribution, Players' Point Distribution, Advanced Breakdown of Points)- filtered according to the cost selected</td>
         </tr>
         <tr>
             <td>Case 4</td>
@@ -51,7 +51,7 @@ handgun sales to determine the presence of any relationship between the two vari
             <td>Select Any</td>
             <td>Select Any</td>
             <td>     -</td>
-            <td>2 graphs (Player Break down by Proposition & price, Players' Statistics) - filtered according to the cost selected</td>
+            <td>2 graphs (Player Breakdown by Proposition & price, Players' Statistics) - filtered according to the cost selected</td>
         </tr>
         <tr>
             <td>Case 5</td>
