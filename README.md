@@ -13,14 +13,14 @@ handgun sales to determine the presence of any relationship between the two vari
   <col width="10%">
   <col width="20%">
     <tbody>
-      <tr/b>
+      <tr b>
         <td>Cases</th>
         <td>Club </th>
         <td>Position</th>
         <td>Price </th>
         <td>Player</th>
         <td>Output</th>
-      </tr>
+      </tr b>
         <tr>
             <td>Case 1  </td>
             <td>Select Any</td>
