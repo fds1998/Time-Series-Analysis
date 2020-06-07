@@ -13,7 +13,7 @@ handgun sales to determine the presence of any relationship between the two vari
   <col width="10%">
   <col width="20%">
     <tbody>
-      <tr style = "font-weight:bold">
+      <tr/b>
         <td>Cases</th>
         <td>Club </th>
         <td>Position</th>
